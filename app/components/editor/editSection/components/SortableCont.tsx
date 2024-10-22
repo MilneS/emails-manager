@@ -54,7 +54,7 @@ export default function SortableCont() {
     });
     setItems(ids);
     dispatch(setCardsInputs(cardInp));
-  }, [selectedTemplate]);
+  }, []);
 
   useEffect(() => {
     const itemsData: Card[] = [];
@@ -64,6 +64,7 @@ export default function SortableCont() {
         itemsData.push(found);
       }
     }
+    console.log(items)
     dispatch(setCardsOrder(itemsData));
   }, [items]);
 
