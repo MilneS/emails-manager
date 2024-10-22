@@ -1,6 +1,20 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
-import "@/styles/globals.css";
+import localFont from "next/font/local";
+import Providers from "../appStore/provider";
+import DrawerAppBar from "./components/Navbar";
+import { Box } from "@mui/material";
+
+const geistSans = localFont({
+  src: "../fonts/GeistVF.woff",
+  variable: "--font-geist-sans",
+  weight: "100 900",
+});
+const geistMono = localFont({
+  src: "../fonts/GeistMonoVF.woff",
+  variable: "--font-geist-mono",
+  weight: "100 900",
+});
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -16,7 +30,15 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={inter.className}>{children}</body>
+      <body
+        className={`${geistSans.variable} ${geistMono.variable}`}
+        style={{ height: "100vh" }}
+      >
+        <DrawerAppBar />
+        <Box height="calc(100% - 4rem)">
+          <Providers>{children}</Providers>
+        </Box>
+      </body>
     </html>
   );
 }
