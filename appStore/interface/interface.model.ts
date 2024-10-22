@@ -24,3 +24,10 @@ export interface LoginField {
   maxLength: number;
   type: string;
 }
+export interface User {
+  email: string;
+  isAdmin: boolean;
+  name: string;
+  password: string;
+  _id: string;
+}

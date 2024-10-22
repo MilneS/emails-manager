@@ -64,7 +64,6 @@ export default function SortableCont() {
         itemsData.push(found);
       }
     }
-    console.log(items)
     dispatch(setCardsOrder(itemsData));
   }, [items]);
 

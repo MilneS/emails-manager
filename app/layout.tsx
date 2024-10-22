@@ -34,10 +34,10 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable}`}
         style={{ height: "100vh" }}
       >
-        <DrawerAppBar />
-        <Box height="calc(100% - 4rem)">
-          <Providers>{children}</Providers>
-        </Box>
+        <Providers>
+          <DrawerAppBar />
+          <Box height="calc(100% - 4rem)">{children}</Box>
+        </Providers>
       </body>
     </html>
   );

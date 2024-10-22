@@ -17,6 +17,8 @@ import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { useSelector } from "react-redux";
+import { RootSate } from "@/appStore/store";
 
 interface Props {
   /**
@@ -27,13 +29,16 @@ interface Props {
 }
 
 const drawerWidth = 240;
-const navItems = ["Editor", "Account"];
-const navItemsLinks = {
-  editor: "/email-editor",
-  account: "/account",
-};
 
 export default function DrawerAppBar(props: Props) {
+  const isLoggedIn: boolean = useSelector(
+    (state: RootSate) => state.authReducer.isLoggedIn
+  );
+  const navItems = ["Editor", isLoggedIn ? "Account" : "Logout"];
+  const navItemsLinks = {
+    editor: "/email-editor",
+    account: isLoggedIn ? "/account" : "/",
+  };
   const { window } = props;
   const [mobileOpen, setMobileOpen] = React.useState(false);
   const router = useRouter();

@@ -1,11 +1,12 @@
 import { Box, Button, Card, TextField, Typography } from "@mui/material";
 import { RootSate } from "@/appStore/store";
 import { useSelector, useDispatch } from "react-redux";
-import { useForm } from "react-hook-form";
+import { FieldValues, useForm } from "react-hook-form";
 import { styled } from "@mui/material/styles";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { loginFields, registerFields } from "@/utils";
-import { LoginField } from "@/appStore/interface/interface.model";
+import { LoginField, User } from "@/appStore/interface/interface.model";
+import { setIsLoggedIn, setUserData } from "@/appStore/authSlice";
 
 const centerColStyle = {
   display: "flex",
@@ -26,6 +27,12 @@ const StyledTextField = styled(TextField)(() => ({
 
 const Login = () => {
   const [isRegister, setIsRegister] = useState(false);
+  const [allUsers, setAllUsers] = useState<User[]>([]);
+  const [userError, setUserError] = useState<string | null>(null);
+  const dispatch = useDispatch();
+  const userData: User | null = useSelector(
+    (state: RootSate) => state.authReducer.userData
+  );
 
   const {
     register,
@@ -35,6 +42,13 @@ const Login = () => {
     clearErrors,
     formState: { errors },
   } = useForm();
+
+  const getAllUsers = async () => {
+    const fetchedUsers = await (
+      await fetch("http://localhost:3000/api/users")
+    ).json();
+    setAllUsers(fetchedUsers);
+  };
 
   const validationData = (field: LoginField) => {
     return {
@@ -66,6 +80,64 @@ const Login = () => {
       },
     };
   };
+  const loginSubmition = (data: FieldValues) => {
+    const { loginEmail, loginPassword } = data;
+    if (allUsers && Object.keys(errors).length === 0) {
+      const foundUser = allUsers.find(
+        (user) => user.email === loginEmail && user.password === loginPassword
+      );
+      if (foundUser) {
+        dispatch(setUserData(foundUser));
+        dispatch(setIsLoggedIn(true));
+      } else {
+        setUserError("Incorrect email or password.");
+      }
+    }
+  };
+  const registerSubmition = (data: FieldValues) => {
+    const { registerEmail, registerPassword } = data;
+    if (allUsers && Object.keys(errors).length === 0) {
+      const foundUserEmail = allUsers.find(
+        (user) => user.email === registerEmail
+      );
+      if (foundUserEmail) {
+        setUserError("There is already a user with this email.");
+      } else {
+        //  send to mongodb
+        dispatch(setIsLoggedIn(true));
+      }
+    }
+  };
+
+  const errorsCheck = (fieldId: string) => {
+    let errorCheck = false;
+    let helperTextCheck: boolean | string | undefined = false;
+    // error
+    if (errors[fieldId]) {
+      errorCheck = true;
+    } else if (userError) {
+      !isRegister
+        ? (errorCheck = !!userError)
+        : (errorCheck = !!(fieldId === "registerEmail" && userError));
+    } else {
+      errorCheck = false;
+    }
+    // helperText
+    if (!!userError) {
+      !isRegister
+        ? (helperTextCheck = userError)
+        : (helperTextCheck = fieldId === "registerEmail" && userError);
+    } else {
+      !!errors[fieldId]?.message
+        ? (helperTextCheck = `${errors[fieldId]?.message}`)
+        : (helperTextCheck = undefined);
+    }
+    return { errorCheck, helperTextCheck };
+  };
+
+  useEffect(() => {
+    getAllUsers();
+  }, []);
 
   return (
     <Card sx={cardStyle}>
@@ -77,7 +149,9 @@ const Login = () => {
         component="form"
         noValidate
         autoComplete="off"
-        onSubmit={handleSubmit((data) => console.log(data))}
+        onSubmit={handleSubmit((data) =>
+          isRegister ? registerSubmition(data) : loginSubmition(data)
+        )}
       >
         {(isRegister ? registerFields : loginFields).map(
           (field: LoginField) => (
@@ -88,13 +162,12 @@ const Login = () => {
               type={field.type}
               label={field.name}
               variant="outlined"
-              error={!!errors[field.id]}
-              helperText={
-                errors[field.id]?.message
-                  ? `${errors[field.id]?.message}`
-                  : undefined
-              }
-              onChange={() => clearErrors(field.id)}
+              error={errorsCheck(field.id).errorCheck}
+              helperText={errorsCheck(field.id).helperTextCheck}
+              onChange={() => {
+                clearErrors(field.id);
+                setUserError(null);
+              }}
             />
           )
         )}
