@@ -28,6 +28,7 @@ const StyledTextField = styled(TextField)(() => ({
 const Login = () => {
   const [isRegister, setIsRegister] = useState(false);
   const [allUsers, setAllUsers] = useState<User[]>([]);
+  const [users, setUsers] = useState<User>();
   const [userError, setUserError] = useState<string | null>(null);
   const dispatch = useDispatch();
   const userData: User | null = useSelector(
@@ -43,11 +44,15 @@ const Login = () => {
     formState: { errors },
   } = useForm();
 
-  const getAllUsers = async () => {
-    const fetchedUsers = await (
-      await fetch("http://localhost:3000/api/users")
-    ).json();
-    setAllUsers(fetchedUsers);
+  const getUser = async (email: string) => {
+    const fetchedUser = await fetch("http://localhost:3000/api/user/", {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        email: email,
+      },
+    });
+    return fetchedUser.json();
   };
 
   const validationData = (field: LoginField) => {
@@ -80,27 +85,23 @@ const Login = () => {
       },
     };
   };
-  const loginSubmition = (data: FieldValues) => {
+  const loginSubmition = async (data: FieldValues) => {
     const { loginEmail, loginPassword } = data;
-    if (allUsers && Object.keys(errors).length === 0) {
-      const foundUser = allUsers.find(
-        (user) => user.email === loginEmail && user.password === loginPassword
-      );
-      if (foundUser) {
-        dispatch(setUserData(foundUser));
+    if (Object.keys(errors).length === 0) {
+      const user = await getUser(loginEmail);
+      if (user && loginPassword === user.password) {
+        dispatch(setUserData(user));
         dispatch(setIsLoggedIn(true));
       } else {
         setUserError("Incorrect email or password.");
       }
     }
   };
-  const registerSubmition = (data: FieldValues) => {
+  const registerSubmition = async (data: FieldValues) => {
     const { registerEmail, registerPassword } = data;
-    if (allUsers && Object.keys(errors).length === 0) {
-      const foundUserEmail = allUsers.find(
-        (user) => user.email === registerEmail
-      );
-      if (foundUserEmail) {
+    if (Object.keys(errors).length === 0) {
+      const user = await getUser(registerEmail);
+      if (user) {
         setUserError("There is already a user with this email.");
       } else {
         //  send to mongodb
@@ -134,10 +135,6 @@ const Login = () => {
     }
     return { errorCheck, helperTextCheck };
   };
-
-  useEffect(() => {
-    getAllUsers();
-  }, []);
 
   return (
     <Card sx={cardStyle}>
