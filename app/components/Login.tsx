@@ -3,10 +3,11 @@ import { RootSate } from "@/appStore/store";
 import { useSelector, useDispatch } from "react-redux";
 import { FieldValues, useForm } from "react-hook-form";
 import { styled } from "@mui/material/styles";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { loginFields, registerFields } from "@/utils";
 import { LoginField, User } from "@/appStore/interface/interface.model";
 import { setIsLoggedIn, setUserData } from "@/appStore/authSlice";
+import { getUser, createUser } from "../../services/user";
 
 const centerColStyle = {
   display: "flex",
@@ -27,8 +28,6 @@ const StyledTextField = styled(TextField)(() => ({
 
 const Login = () => {
   const [isRegister, setIsRegister] = useState(false);
-  const [allUsers, setAllUsers] = useState<User[]>([]);
-  const [users, setUsers] = useState<User>();
   const [userError, setUserError] = useState<string | null>(null);
   const dispatch = useDispatch();
   const userData: User | null = useSelector(
@@ -43,17 +42,6 @@ const Login = () => {
     clearErrors,
     formState: { errors },
   } = useForm();
-
-  const getUser = async (email: string) => {
-    const fetchedUser = await fetch("http://localhost:3000/api/user/", {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        email: email,
-      },
-    });
-    return fetchedUser.json();
-  };
 
   const validationData = (field: LoginField) => {
     return {
@@ -98,13 +86,20 @@ const Login = () => {
     }
   };
   const registerSubmition = async (data: FieldValues) => {
-    const { registerEmail, registerPassword } = data;
+    const { registerEmail, registerPassword, registerName } = data;
     if (Object.keys(errors).length === 0) {
       const user = await getUser(registerEmail);
       if (user) {
         setUserError("There is already a user with this email.");
       } else {
-        //  send to mongodb
+        const userData = {
+          name: registerName,
+          email: registerEmail,
+          password: registerPassword,
+          isAdmin: false,
+        };
+        createUser(registerName, registerEmail, registerPassword, false);
+        dispatch(setUserData(userData));
         dispatch(setIsLoggedIn(true));
       }
     }

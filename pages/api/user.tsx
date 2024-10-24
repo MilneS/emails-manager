@@ -13,9 +13,10 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
         res.json(user);
         break;
       case "POST":
+        const userData= JSON.parse(req.body)
         const updateUser = await db
           .collection("users")
-          .findOne({ email: req.headers.email });
+          .insertOne(userData);
         res.json(updateUser);
         break;
     }

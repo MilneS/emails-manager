@@ -73,6 +73,14 @@ export const loginFields: LoginField[] = [
 ];
 export const registerFields = [
   {
+    name: "Name",
+    id: "registerName",
+    isRequired: "Please enter a name",
+    minLength: 2,
+    maxLength: 20,
+    type: "text",
+  },
+  {
     name: "Email",
     id: "registerEmail",
     isRequired: "Please enter an email",
