@@ -12,6 +12,13 @@ export interface Template {
   templateImage: StaticImageData;
   comps: Card[];
 }
+export interface SavedTemplate {
+  _id?: string;
+  cardsInputs: Inpt[];
+  cardsOrder: Card[];
+  authorId: string;
+  isReorderable: boolean;
+}
 export interface Inpt {
   id: string;
   value: string;

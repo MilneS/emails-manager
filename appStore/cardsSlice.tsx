@@ -7,11 +7,13 @@ const initialState: {
   cardsOrder: Card[];
   cardsInputs: Inpt[];
   selectedCard: string | null;
+  saveTemplateMessage: null | string;
 } = {
   selectedTemplate: null,
   cardsOrder: [],
   cardsInputs: [],
   selectedCard: null,
+  saveTemplateMessage: null,
 };
 
 export const cardsSlice = createSlice({
@@ -30,6 +32,9 @@ export const cardsSlice = createSlice({
     setSelectedCard: (state, action) => {
       state.selectedCard = action.payload;
     },
+    setSaveTemplateMessage: (state, action) => {
+      state.saveTemplateMessage = action.payload;
+    },
   },
 });
 
@@ -38,6 +43,7 @@ export const {
   setCardsInputs,
   setSelectedTemplate,
   setSelectedCard,
+  setSaveTemplateMessage,
 } = cardsSlice.actions;
 
 export default cardsSlice.reducer;

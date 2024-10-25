@@ -1,10 +1,15 @@
-import * as React from "react";
+"use client";
+import { useState } from "react";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import Modal from "@mui/material/Modal";
 import { IconButton } from "@mui/material";
 import { Save } from "@mui/icons-material";
+import { useDispatch, useSelector } from "react-redux";
+import { RootSate } from "@/appStore/store";
+import { createTemplate } from "@/services/template";
+import { setSaveTemplateMessage } from "@/appStore/cardsSlice";
 
 const style = {
   position: "absolute",
@@ -22,7 +27,17 @@ const style = {
 };
 
 const SaveModal = () => {
-  const [open, setOpen] = React.useState(false);
+  const [open, setOpen] = useState(false);
+
+  const dispatch = useDispatch();
+
+  const cardsInputs = useSelector(
+    (state: RootSate) => state.cardsReducer.cardsInputs
+  );
+  const userData = useSelector((state: RootSate) => state.authReducer.userData);
+  const cardsOrder = useSelector(
+    (state: RootSate) => state.cardsReducer.cardsOrder
+  );
 
   const handleOpen = () => {
     setOpen(true);
@@ -32,8 +47,20 @@ const SaveModal = () => {
     setOpen(false);
   };
 
-  const save = () => {
-    //save
+  const save = async () => {
+    if (userData?.email) {
+      const saveTemplate = await createTemplate(
+        cardsInputs,
+        cardsOrder,
+        userData?.email,
+        false
+      );
+      saveTemplate.insertedId
+        ? dispatch(setSaveTemplateMessage("Saved!"))
+        : dispatch(
+            setSaveTemplateMessage("Something went wrong, try again later.")
+          );
+    }
     handleClose();
   };
 

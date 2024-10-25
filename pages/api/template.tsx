@@ -7,17 +7,17 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
     const db = client.db("email-manager");
     switch (req.method) {
       case "GET":
-        const user = await db
-          .collection("users")
-          .findOne({ email: req.headers.email });
-        res.json(user);
+        const template = await db
+          .collection("templates")
+          .findOne({ id: req.headers.id });
+        res.json(template);
         break;
       case "POST":
-        const userData= JSON.parse(req.body)
-        const createUser = await db
-          .collection("users")
-          .insertOne(userData);
-        res.json(createUser);
+        const templateData= JSON.parse(req.body)
+        const createTemplate = await db
+          .collection("templates")
+          .insertOne(templateData);
+        res.json(createTemplate);
         break;
     }
   } catch (e) {

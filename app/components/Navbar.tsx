@@ -19,6 +19,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useSelector } from "react-redux";
 import { RootSate } from "@/appStore/store";
+import AlertMessage from "./AlertMessage";
 
 interface Props {
   /**
@@ -33,6 +34,9 @@ const drawerWidth = 240;
 export default function DrawerAppBar(props: Props) {
   const isLoggedIn: boolean = useSelector(
     (state: RootSate) => state.authReducer.isLoggedIn
+  );
+  const saveTemplateMessage = useSelector(
+    (state: RootSate) => state.cardsReducer.saveTemplateMessage
   );
   const navItems = ["Editor", isLoggedIn ? "Account" : "Logout"];
   const navItemsLinks = {
@@ -77,9 +81,12 @@ export default function DrawerAppBar(props: Props) {
     window !== undefined ? () => window().document.body : undefined;
 
   return (
-    <Box sx={{ display: "flex" }}>
+    <Box position="relative" display="flex">
       <CssBaseline />
-      <AppBar component="nav" sx={{ height: "4rem" }}>
+      {saveTemplateMessage && (
+        <AlertMessage message={saveTemplateMessage} />
+      )}
+      <AppBar component="nav" sx={{ height: "4rem", zIndex: 80 }}>
         <Toolbar>
           <IconButton
             color="inherit"
