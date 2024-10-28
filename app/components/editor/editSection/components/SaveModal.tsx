@@ -31,6 +31,9 @@ const SaveModal = () => {
 
   const dispatch = useDispatch();
 
+  const emailTitle = useSelector(
+    (state: RootSate) => state.cardsReducer.emailTitle
+  );
   const cardsInputs = useSelector(
     (state: RootSate) => state.cardsReducer.cardsInputs
   );
@@ -50,6 +53,7 @@ const SaveModal = () => {
   const save = async () => {
     if (userData?.email) {
       const saveTemplate = await createTemplate(
+        emailTitle,
         cardsInputs,
         cardsOrder,
         userData?.email,

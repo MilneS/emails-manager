@@ -6,7 +6,7 @@ const SectionTitle = ({ sectionName }: { sectionName: string }) => {
     <Box
       sx={{
         backgroundColor: "#f7f7f7",
-        height: "4rem",
+        height: "3.5rem",
         px: 3,
         display: "flex",
         alignItems: "center",

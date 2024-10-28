@@ -28,6 +28,7 @@ import type {
   Active,
   Over,
 } from "../../../../../node_modules/@dnd-kit/core/dist/store/index.d.ts";
+import EmailTitleCard from "./EmailTitleCard";
 
 export default function SortableCont() {
   const selectedTemplate: Template | null = useSelector(
@@ -74,7 +75,7 @@ export default function SortableCont() {
       onDragEnd={handleDragEnd}
       onDragStart={handleDragStart}
       modifiers={[restrictToFirstScrollableAncestor]}
-    >
+    > <EmailTitleCard />
       <SortableContext items={items} strategy={verticalListSortingStrategy}>
         <Box overflow="scroll" height="calc( 100% - 4rem )">
           {items.map((id) => {

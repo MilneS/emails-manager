@@ -8,12 +8,14 @@ const initialState: {
   cardsInputs: Inpt[];
   selectedCard: string | null;
   saveTemplateMessage: null | string;
+  emailTitle: null | string;
 } = {
   selectedTemplate: null,
   cardsOrder: [],
   cardsInputs: [],
   selectedCard: null,
   saveTemplateMessage: null,
+  emailTitle: null,
 };
 
 export const cardsSlice = createSlice({
@@ -25,6 +27,9 @@ export const cardsSlice = createSlice({
     },
     setCardsOrder: (state, action) => {
       state.cardsOrder = action.payload;
+    },
+    setEmailTitle: (state, action) => {
+      state.emailTitle = action.payload;
     },
     setCardsInputs: (state, action) => {
       state.cardsInputs = action.payload;
@@ -39,6 +44,7 @@ export const cardsSlice = createSlice({
 });
 
 export const {
+  setEmailTitle,
   setCardsOrder,
   setCardsInputs,
   setSelectedTemplate,

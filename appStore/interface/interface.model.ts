@@ -11,9 +11,11 @@ export interface Template {
   isReorderable: boolean;
   templateImage: StaticImageData;
   comps: Card[];
+  title: string;
 }
 export interface SavedTemplate {
   _id?: string;
+  emailTitle: string | null;
   cardsInputs: Inpt[];
   cardsOrder: Card[];
   authorId: string;
