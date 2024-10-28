@@ -14,7 +14,7 @@ export default function HomeCard({ cardTitle }: { cardTitle: string }) {
     flexDirection: "column",
   };
   return (
-    <Link href={cardTitle === "New email" ? "/templates" : ""}>
+    <Link href={cardTitle === "New email" ? "/templates" : "/my-emails"}>
       <Card
         sx={{
           width: "20rem",
