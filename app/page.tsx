@@ -3,7 +3,8 @@ import { Box } from "@mui/material";
 import HomeCard from "./components/HomeCard";
 import { useSelector } from "react-redux";
 import { RootSate } from "@/appStore/store";
-import Login from "./components/Login";
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 
 export default function Home() {
   const style = {
@@ -15,21 +16,22 @@ export default function Home() {
   const isLoggedIn: boolean = useSelector(
     (state: RootSate) => state.authReducer.isLoggedIn
   );
+  const router = useRouter();
+
+  useEffect(() => {
+    if (!isLoggedIn) {
+      router.push("/login");
+    }
+  }, [isLoggedIn]);
 
   return (
     <Box style={style}>
-      {isLoggedIn ? (
-        <>
-          <Box mr={10}>
-            <HomeCard cardTitle="New email" />
-          </Box>
-          <Box>
-            <HomeCard cardTitle="My emails" />
-          </Box>
-        </>
-      ) : (
-        <Login />
-      )}
+      <Box mr={10}>
+        <HomeCard cardTitle="New email" />
+      </Box>
+      <Box>
+        <HomeCard cardTitle="My emails" />
+      </Box>
     </Box>
   );
 }

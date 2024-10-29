@@ -43,10 +43,11 @@ export default function DrawerAppBar(props: Props) {
   );
   const dispatch = useDispatch();
 
-  const navItems = ["Editor", isLoggedIn ? "Account" : "Logout"];
+  const navItems = ["Editor", isLoggedIn ? "Logout" : "Login"];
   const navItemsLinks = {
     editor: "/email-editor",
-    account: isLoggedIn ? "/account" : "/",
+    login: "/login",
+    logout: "/login",
   };
   const { window } = props;
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -59,7 +60,6 @@ export default function DrawerAppBar(props: Props) {
   const savedLoginToken = async () => {
     const token = document?.cookie?.split("=")[1];
     const tokenEmail = token?.split(":")[0];
-    const tokenNumber = token?.split(":")[1];
     const user: User = await getUser(tokenEmail);
     if (user && user.token === token) {
       dispatch(setUserData({ ...user, token }));
@@ -97,6 +97,20 @@ export default function DrawerAppBar(props: Props) {
     router.push(`${itemLink}`);
   };
 
+  const logout = () => {
+    dispatch(setIsLoggedIn(!isLoggedIn));
+    document.cookie = "token=; expires=Thu, 01 Jan 1970 00:00:00";
+  };
+
+  const selectedItem = (item: string) => {
+    console.log(item);
+
+    if (item === "Logout") {
+      logout();
+    } else {
+      navigateToItemLink(item);
+    }
+  };
   const container =
     window !== undefined ? () => window().document.body : undefined;
 
@@ -133,7 +147,7 @@ export default function DrawerAppBar(props: Props) {
               <Button
                 key={item}
                 sx={{ color: "#fff" }}
-                onClick={() => navigateToItemLink(item)}
+                onClick={() => selectedItem(item)}
               >
                 {item}
               </Button>
