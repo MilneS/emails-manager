@@ -38,5 +38,6 @@ export interface User {
   isAdmin: boolean;
   name: string;
   password: string;
+  token: string;
   _id: string;
 }

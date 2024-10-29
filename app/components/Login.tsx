@@ -43,6 +43,10 @@ const Login = () => {
     formState: { errors },
   } = useForm();
 
+  const generateToken = () => {
+    return Math.random();
+  };
+
   const validationData = (field: LoginField) => {
     return {
       required: field.isRequired,
@@ -73,18 +77,22 @@ const Login = () => {
       },
     };
   };
+
   const loginSubmition = async (data: FieldValues) => {
     const { loginEmail, loginPassword } = data;
     if (Object.keys(errors).length === 0) {
-      const user = await getUser(loginEmail);
+      const user: User = await getUser(loginEmail);
       if (user && loginPassword === user.password) {
-        dispatch(setUserData(user));
+        const token = `${user.email}:${generateToken()}`;
+        dispatch(setUserData({ ...user, token }));
+        document.cookie = `token=${token}`;
         dispatch(setIsLoggedIn(true));
       } else {
         setUserError("Incorrect email or password.");
       }
     }
   };
+
   const registerSubmition = async (data: FieldValues) => {
     const { registerEmail, registerPassword, registerName } = data;
     if (Object.keys(errors).length === 0) {
@@ -92,14 +100,18 @@ const Login = () => {
       if (user) {
         setUserError("There is already a user with this email.");
       } else {
+        const token = `${registerEmail}:${generateToken()}`;
         const userData = {
           name: registerName,
           email: registerEmail,
           password: registerPassword,
           isAdmin: false,
+          token,
         };
-        createUser(registerName, registerEmail, registerPassword, false);
+        createUser(registerName, registerEmail, registerPassword, token, false);
         dispatch(setUserData(userData));
+        document.cookie = `token=${token}`;
+
         dispatch(setIsLoggedIn(true));
       }
     }

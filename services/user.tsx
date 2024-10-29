@@ -13,12 +13,14 @@ export const createUser = async (
   name: string,
   email: string,
   password: string,
+  token: string,
   isAdmin: boolean
 ) => {
   const userData = {
     name,
     email,
     password,
+    token,
     isAdmin,
   };
   const fetchedUser = await fetch("http://localhost:3000/api/user/", {

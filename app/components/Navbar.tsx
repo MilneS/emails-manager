@@ -1,5 +1,5 @@
 "use client";
-import * as React from "react";
+import { useEffect, useState } from "react";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import CssBaseline from "@mui/material/CssBaseline";
@@ -17,9 +17,12 @@ import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { RootSate } from "@/appStore/store";
 import AlertMessage from "./AlertMessage";
+import { User } from "@/appStore/interface/interface.model";
+import { getUser } from "@/services/user";
+import { setIsLoggedIn, setUserData } from "@/appStore/authSlice";
 
 interface Props {
   /**
@@ -38,18 +41,35 @@ export default function DrawerAppBar(props: Props) {
   const saveTemplateMessage = useSelector(
     (state: RootSate) => state.cardsReducer.saveTemplateMessage
   );
+  const dispatch = useDispatch();
+
   const navItems = ["Editor", isLoggedIn ? "Account" : "Logout"];
   const navItemsLinks = {
     editor: "/email-editor",
     account: isLoggedIn ? "/account" : "/",
   };
   const { window } = props;
-  const [mobileOpen, setMobileOpen] = React.useState(false);
+  const [mobileOpen, setMobileOpen] = useState(false);
   const router = useRouter();
 
   const handleDrawerToggle = () => {
     setMobileOpen((prevState) => !prevState);
   };
+
+  const savedLoginToken = async () => {
+    const token = document?.cookie?.split("=")[1];
+    const tokenEmail = token?.split(":")[0];
+    const tokenNumber = token?.split(":")[1];
+    const user: User = await getUser(tokenEmail);
+    if (user && user.token === token) {
+      dispatch(setUserData({ ...user, token }));
+      dispatch(setIsLoggedIn(true));
+    }
+  };
+
+  useEffect(() => {
+    savedLoginToken();
+  }, []);
 
   const drawer = (
     <Box onClick={handleDrawerToggle} sx={{ textAlign: "center" }}>
@@ -83,9 +103,7 @@ export default function DrawerAppBar(props: Props) {
   return (
     <Box position="relative" display="flex">
       <CssBaseline />
-      {saveTemplateMessage && (
-        <AlertMessage message={saveTemplateMessage} />
-      )}
+      {saveTemplateMessage && <AlertMessage message={saveTemplateMessage} />}
       <AppBar component="nav" sx={{ height: "4rem", zIndex: 80 }}>
         <Toolbar>
           <IconButton
