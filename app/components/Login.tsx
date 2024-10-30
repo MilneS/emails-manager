@@ -7,7 +7,7 @@ import { useState } from "react";
 import { loginFields, registerFields } from "@/utils";
 import { LoginField, User } from "@/appStore/interface/interface.model";
 import { setIsLoggedIn, setUserData } from "@/appStore/authSlice";
-import { getUser, createUser } from "../../services/user";
+import { getUser, createUser, updateUserToken } from "../../services/user";
 
 const centerColStyle = {
   display: "flex",
@@ -84,8 +84,11 @@ const Login = () => {
       const user: User = await getUser(loginEmail);
       if (user && loginPassword === user.password) {
         const token = `${user.email}:${generateToken()}`;
-        dispatch(setUserData({ ...user, token }));
-        document.cookie = `token=${token}`;
+        const updatedToken = await updateUserToken(user.email, token);
+        if (updatedToken.modifiedCount === 1) {
+          dispatch(setUserData({ ...user, token }));
+          document.cookie = `token=${token}`;
+        } 
         dispatch(setIsLoggedIn(true));
       } else {
         setUserError("Incorrect email or password.");

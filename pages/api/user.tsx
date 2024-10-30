@@ -13,11 +13,19 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
         res.json(user);
         break;
       case "POST":
-        const userData= JSON.parse(req.body)
-        const createUser = await db
-          .collection("users")
-          .insertOne(userData);
+        const userData = JSON.parse(req.body);
+        const createUser = await db.collection("users").insertOne(userData);
         res.json(createUser);
+        break;
+      case "PUT":
+        const updatedUserData = JSON.parse(req.body);
+        const updateUser = await db
+          .collection("users")
+          .updateOne(
+            { email: updatedUserData.email },
+            { $set: { token: updatedUserData.token } }
+          );
+        res.json(updateUser);
         break;
     }
   } catch (e) {

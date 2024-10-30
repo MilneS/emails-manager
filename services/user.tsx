@@ -29,3 +29,15 @@ export const createUser = async (
   });
   return fetchedUser.json();
 };
+
+export const updateUserToken = async (email: string, token: string) => {
+  const userData = {
+    email,
+    token,
+  };
+  const fetchedUser = await fetch("http://localhost:3000/api/user/", {
+    method: "PUT",
+    body: JSON.stringify(userData),
+  });
+  return fetchedUser.json();
+};
