@@ -43,9 +43,9 @@ export default function DrawerAppBar(props: Props) {
   );
   const dispatch = useDispatch();
 
-  const navItems = ["Editor", isLoggedIn ? "Logout" : "Login"];
+  const navItems = ["My emails", isLoggedIn ? "Logout" : "Login"];
   const navItemsLinks = {
-    editor: "/email-editor",
+    myEmails: "/my-emails",
     login: "/login",
     logout: "/login",
   };
@@ -92,8 +92,14 @@ export default function DrawerAppBar(props: Props) {
   );
 
   const navigateToItemLink = (item: string) => {
+    console.log(item);
+
     const itemLink =
-      navItemsLinks[item.toLocaleLowerCase() as keyof typeof navItemsLinks];
+      navItemsLinks[
+        item === "My emails"
+          ? 'myEmails'
+          : (item.toLocaleLowerCase() as keyof typeof navItemsLinks)
+      ];
     router.push(`${itemLink}`);
   };
 

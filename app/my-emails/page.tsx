@@ -10,6 +10,6 @@ const savedEmails = () => {
   useEffect(() => {
     templates();
   }, []);
-  return <>templates</>;
+  return <>my emails</>;
 };
 export default savedEmails;
