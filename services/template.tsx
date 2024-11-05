@@ -4,13 +4,17 @@ import {
   SavedTemplate,
 } from "@/appStore/interface/interface.model";
 
-export const getAllTemplates = async () => {
-  const fetchedTemplates = await fetch("http://localhost:3000/api/templates/", {
-    method: "GET",
-    headers: {
-      "Content-Type": "application/json",
-    },
-  });
+export const getAllTemplates = async (email: string) => {
+  const fetchedTemplates = await fetch(
+    "http://localhost:3000/api/allTemplates/",
+    {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        email: email,
+      },
+    }
+  );
   return fetchedTemplates.json();
 };
 
