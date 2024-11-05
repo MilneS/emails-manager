@@ -86,13 +86,14 @@ const SaveModal = () => {
           </Typography>
           <Box mt={3} mb={1}>
             <Button
+              color="error"
               variant="contained"
               sx={{ marginRight: "0.5rem" }}
               onClick={handleClose}
             >
               Cancel
             </Button>
-            <Button color="error" variant="contained" onClick={save}>
+            <Button variant="contained" onClick={save}>
               Confirm
             </Button>
           </Box>
