@@ -52,6 +52,7 @@ const SaveModal = () => {
 
   const save = async () => {
     if (userData?.email) {
+      // id in path ? update :
       const saveTemplate = await createTemplate(
         emailTitle,
         cardsInputs,
@@ -59,11 +60,14 @@ const SaveModal = () => {
         userData?.email,
         false
       );
-      saveTemplate.insertedId
-        ? dispatch(setSaveTemplateMessage("Saved!"))
-        : dispatch(
-            setSaveTemplateMessage("Something went wrong, try again later.")
-          );
+      if (saveTemplate.insertedId) {
+        //insert id to path
+        dispatch(setSaveTemplateMessage("Saved!"));
+      } else {
+        dispatch(
+          setSaveTemplateMessage("Something went wrong, try again later.")
+        );
+      }
     }
     handleClose();
   };

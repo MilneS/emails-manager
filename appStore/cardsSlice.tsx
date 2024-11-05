@@ -1,6 +1,11 @@
 "use client";
 import { createSlice } from "@reduxjs/toolkit";
-import { Card, Inpt, Template } from "./interface/interface.model";
+import {
+  Card,
+  Inpt,
+  SavedTemplate,
+  Template,
+} from "./interface/interface.model";
 
 const initialState: {
   selectedTemplate: Template | null;
@@ -9,6 +14,7 @@ const initialState: {
   selectedCard: string | null;
   saveTemplateMessage: null | string;
   emailTitle: null | string;
+  allTemplates: SavedTemplate[] | [];
 } = {
   selectedTemplate: null,
   cardsOrder: [],
@@ -16,6 +22,7 @@ const initialState: {
   selectedCard: null,
   saveTemplateMessage: null,
   emailTitle: null,
+  allTemplates: [],
 };
 
 export const cardsSlice = createSlice({
@@ -40,6 +47,9 @@ export const cardsSlice = createSlice({
     setSaveTemplateMessage: (state, action) => {
       state.saveTemplateMessage = action.payload;
     },
+    setAllTemplates: (state, action) => {
+      state.allTemplates = action.payload;
+    },
   },
 });
 
@@ -50,6 +60,7 @@ export const {
   setSelectedTemplate,
   setSelectedCard,
   setSaveTemplateMessage,
+  setAllTemplates,
 } = cardsSlice.actions;
 
 export default cardsSlice.reducer;

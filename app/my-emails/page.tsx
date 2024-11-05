@@ -3,23 +3,40 @@ import { User } from "@/appStore/interface/interface.model";
 import { RootSate } from "@/appStore/store";
 import { getAllTemplates } from "@/services/template";
 import { useEffect } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import TemplateTable from "../components/TemplatesTable";
+import { Box, Typography } from "@mui/material";
+import { setAllTemplates } from "@/appStore/cardsSlice";
 
+const style = {
+  height: "100%",
+  display: "flex",
+  alignItems: "center",
+  flexDirection: "column",
+  padding: "4rem",
+};
 const savedEmails = () => {
   const userData: User | null = useSelector(
     (state: RootSate) => state.authReducer.userData
   );
+  const dispatch = useDispatch();
+
 
   const templates = async () => {
     if (userData) {
       const templates = await getAllTemplates(userData.email);
-      console.log(templates);
+      dispatch(setAllTemplates(templates));
     }
   };
 
   useEffect(() => {
     templates();
   }, [userData]);
-  return <>my emails</>;
+  return (
+    <Box sx={style}>
+      <Typography variant="h3">MY EMAILS</Typography>
+      <TemplateTable />
+    </Box>
+  );
 };
 export default savedEmails;
