@@ -23,6 +23,7 @@ import AlertMessage from "./AlertMessage";
 import { User } from "@/appStore/interface/interface.model";
 import { getUser } from "@/services/user";
 import { setIsLoggedIn, setUserData } from "@/appStore/authSlice";
+import { usePathname } from "next/navigation";
 
 interface Props {
   /**
@@ -35,13 +36,18 @@ interface Props {
 const drawerWidth = 240;
 
 export default function DrawerAppBar(props: Props) {
+  const [mobileOpen, setMobileOpen] = useState(false);
   const isLoggedIn: boolean = useSelector(
     (state: RootSate) => state.authReducer.isLoggedIn
   );
   const saveTemplateMessage = useSelector(
     (state: RootSate) => state.cardsReducer.saveTemplateMessage
   );
+  const pathName = usePathname();
   const dispatch = useDispatch();
+  const router = useRouter();
+
+  const { window } = props;
 
   const navItems = ["My emails", isLoggedIn ? "Logout" : "Login"];
   const navItemsLinks = {
@@ -49,10 +55,6 @@ export default function DrawerAppBar(props: Props) {
     login: "/login",
     logout: "/login",
   };
-  const { window } = props;
-  const [mobileOpen, setMobileOpen] = useState(false);
-  const router = useRouter();
-
   const handleDrawerToggle = () => {
     setMobileOpen((prevState) => !prevState);
   };
@@ -70,6 +72,12 @@ export default function DrawerAppBar(props: Props) {
   useEffect(() => {
     savedLoginToken();
   }, []);
+
+  useEffect(() => {
+    if (!isLoggedIn) {
+      router.push("/login");
+    }
+  }, [isLoggedIn, pathName]);
 
   const drawer = (
     <Box onClick={handleDrawerToggle} sx={{ textAlign: "center" }}>
@@ -92,12 +100,10 @@ export default function DrawerAppBar(props: Props) {
   );
 
   const navigateToItemLink = (item: string) => {
-    console.log(item);
-
     const itemLink =
       navItemsLinks[
         item === "My emails"
-          ? 'myEmails'
+          ? "myEmails"
           : (item.toLocaleLowerCase() as keyof typeof navItemsLinks)
       ];
     router.push(`${itemLink}`);
@@ -109,8 +115,6 @@ export default function DrawerAppBar(props: Props) {
   };
 
   const selectedItem = (item: string) => {
-    console.log(item);
-
     if (item === "Logout") {
       logout();
     } else {

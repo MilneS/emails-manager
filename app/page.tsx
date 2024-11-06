@@ -18,12 +18,6 @@ export default function Home() {
   );
   const router = useRouter();
 
-  useEffect(() => {
-    if (!isLoggedIn) {
-      router.push("/login");
-    }
-  }, [isLoggedIn]);
-
   return (
     <Box style={style}>
       <Box mr={10}>
