@@ -34,12 +34,9 @@ const SaveModal = () => {
   const emailTitle = useSelector(
     (state: RootSate) => state.cardsReducer.emailTitle
   );
-  const cardsInputs = useSelector(
-    (state: RootSate) => state.cardsReducer.cardsInputs
-  );
   const userData = useSelector((state: RootSate) => state.authReducer.userData);
-  const cardsOrder = useSelector(
-    (state: RootSate) => state.cardsReducer.cardsOrder
+  const cards = useSelector(
+    (state: RootSate) => state.cardsReducer.cards
   );
 
   const handleOpen = () => {
@@ -55,8 +52,7 @@ const SaveModal = () => {
       // id in path ? update :
       const saveTemplate = await createTemplate(
         emailTitle,
-        cardsInputs,
-        cardsOrder,
+        cards,
         userData?.email,
         false
       );

@@ -31,15 +31,13 @@ export const getTemplate = async (id: string) => {
 
 export const createTemplate = async (
   emailTitle: string | null,
-  cardsInputs: Inpt[],
-  cardsOrder: Card[],
+  cards: Card[],
   authorId: string,
   isReorderable: boolean
 ) => {
   const templateData: SavedTemplate = {
     emailTitle,
-    cardsInputs,
-    cardsOrder,
+    cards,
     authorId,
     isReorderable,
   };

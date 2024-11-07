@@ -4,8 +4,8 @@ import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { useDispatch, useSelector } from "react-redux";
 import {
-  setCardsInputs,
   setSelectedCard,
+  setSelectedTemplate,
 } from "../../../../../appStore/cardsSlice";
 import {
   Card as Cards,
@@ -19,17 +19,15 @@ const EditableItem = ({
   itemId,
   item,
   isGrabbed,
-  value,
 }: {
   itemId: string;
   item: Cards;
   isGrabbed: boolean;
-  value: string;
 }) => {
-  const [itemVal, setItemVal] = useState(value);
+  const [itemVal, setItemVal] = useState(item.value);
   const dispatch = useDispatch();
-  const cardsInputs = useSelector(
-    (state: RootSate) => state.cardsReducer.cardsInputs
+  const selectedTemplate = useSelector(
+    (state: RootSate) => state.cardsReducer.selectedTemplate
   );
 
   const { attributes, listeners, setNodeRef, transform, transition } =
@@ -53,13 +51,13 @@ const EditableItem = ({
     e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement, Element>
   ) => {
     dispatch(setSelectedCard(null));
-    const cardsInputsCopy = JSON.parse(JSON.stringify(cardsInputs));
-    cardsInputsCopy.forEach((inp: Inpt) => {
-      if (e.target.id === inp.id) {
-        inp.value = e.target.value;
+    const templateCopy = JSON.parse(JSON.stringify(selectedTemplate));
+    templateCopy.cards.forEach((card: Inpt) => {
+      if (e.target.id === card.id) {
+        card.value = e.target.value;
       }
     });
-    dispatch(setCardsInputs(cardsInputsCopy));
+    dispatch(setSelectedTemplate(templateCopy));
   };
 
   return (

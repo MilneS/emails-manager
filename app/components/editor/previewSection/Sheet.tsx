@@ -8,11 +8,8 @@ import {
 import { RootSate } from "../../../../appStore/store";
 
 const Sheet = () => {
-  const cardsOrder = useSelector(
-    (state: RootSate) => state.cardsReducer.cardsOrder
-  );
-  const cardsInputs = useSelector(
-    (state: RootSate) => state.cardsReducer.cardsInputs
+  const cards = useSelector(
+    (state: RootSate) => state.cardsReducer.cards
   );
   const selectedTemplate: SavedTemplate | null = useSelector(
     (state: RootSate) => state.cardsReducer.selectedTemplate
@@ -28,16 +25,15 @@ const Sheet = () => {
         padding: "3rem",
       }}
     >
-      {cardsOrder.map((item: Card) => {
-        const inputValue = cardsInputs.find((inp) => inp.id === item.id)?.value;
-        const foundCard = selectedTemplate?.cardsOrder.find(
+      {cards.map((item: Card) => {
+        const foundCard = selectedTemplate?.cards.find(
           (card) => card.id === item.id
         );
         return foundCard ? (
           <PreviewItem
             key={item.id}
             item={item}
-            inputValue={inputValue ?? ""}
+            inputValue={item.value ?? ""}
           />
         ) : null;
       })}

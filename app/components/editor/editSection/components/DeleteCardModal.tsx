@@ -49,19 +49,12 @@ const DeleteCardModal = ({ itemId }: { itemId: string }) => {
     const localTemplate: SavedTemplate = JSON.parse(
       JSON.stringify(selectedTemplate)
     );
-    const foundOrder = localTemplate.cardsOrder.find(
+    const foundOrder = localTemplate.cards.find(
       (card) => card.id === itemId
     );
     if (foundOrder) {
-      const idxOrder = localTemplate.cardsOrder.indexOf(foundOrder);
-      localTemplate.cardsOrder.splice(idxOrder, 1);
-      const foundInp = localTemplate.cardsInputs.find(
-        (card) => card.id === itemId
-      );
-      if (foundInp) {
-        const idxInp = localTemplate.cardsInputs.indexOf(foundInp);
-        localTemplate.cardsInputs.splice(idxInp, 1);
-      }
+      const idxOrder = localTemplate.cards.indexOf(foundOrder);
+      localTemplate.cards.splice(idxOrder, 1);
     }
 
     console.log(localTemplate);

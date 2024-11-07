@@ -1,5 +1,4 @@
 "use client";
-import { templates } from "../../../utils";
 import { setSelectedTemplate } from "../../../appStore/cardsSlice";
 import { useEffect } from "react";
 import Editor from "../../components/editor/editSection";

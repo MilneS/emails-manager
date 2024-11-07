@@ -5,19 +5,14 @@ export interface Card {
   id: string;
   maxChar: number;
   name: string;
-}
-export interface Template {
-  id: string;
-  isReorderable: boolean;
-  templateImage: StaticImageData;
-  comps: Card[];
-  title: string;
+  value: string;
 }
 export interface SavedTemplate {
   _id?: string;
+  newTemplateId?: string;
+  templateImage?: StaticImageData;
   emailTitle: string | null;
-  cardsInputs: Inpt[];
-  cardsOrder: Card[];
+  cards: Card[];
   authorId: string;
   isReorderable: boolean;
 }

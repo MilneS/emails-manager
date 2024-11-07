@@ -1,24 +1,17 @@
 "use client";
 import { createSlice } from "@reduxjs/toolkit";
-import {
-  Card,
-  Inpt,
-  SavedTemplate,
-  Template,
-} from "./interface/interface.model";
+import { Card, SavedTemplate } from "./interface/interface.model";
 
 const initialState: {
   selectedTemplate: SavedTemplate | null;
-  cardsOrder: Card[];
-  cardsInputs: Inpt[];
+  cards: Card[];
   selectedCard: string | null;
   saveTemplateMessage: null | string;
   emailTitle: null | string;
   allTemplates: SavedTemplate[] | [];
 } = {
   selectedTemplate: null,
-  cardsOrder: [],
-  cardsInputs: [],
+  cards: [],
   selectedCard: null,
   saveTemplateMessage: null,
   emailTitle: null,
@@ -32,14 +25,11 @@ export const cardsSlice = createSlice({
     setSelectedTemplate: (state, action) => {
       state.selectedTemplate = action.payload;
     },
-    setCardsOrder: (state, action) => {
-      state.cardsOrder = action.payload;
+    setCards: (state, action) => {
+      state.cards = action.payload;
     },
     setEmailTitle: (state, action) => {
       state.emailTitle = action.payload;
-    },
-    setCardsInputs: (state, action) => {
-      state.cardsInputs = action.payload;
     },
     setSelectedCard: (state, action) => {
       state.selectedCard = action.payload;
@@ -55,8 +45,7 @@ export const cardsSlice = createSlice({
 
 export const {
   setEmailTitle,
-  setCardsOrder,
-  setCardsInputs,
+  setCards,
   setSelectedTemplate,
   setSelectedCard,
   setSaveTemplateMessage,

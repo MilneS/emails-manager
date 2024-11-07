@@ -17,11 +17,8 @@ import { restrictToFirstScrollableAncestor } from "@dnd-kit/modifiers";
 import EditableItem from "./EditableItem";
 import { Box } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  setCardsInputs,
-  setCardsOrder,
-} from "../../../../../appStore/cardsSlice";
-import { Card, Inpt } from "../../../../../appStore/interface/interface.model";
+import { setCards } from "../../../../../appStore/cardsSlice";
+import { Card } from "../../../../../appStore/interface/interface.model";
 import { RootSate } from "../../../../../appStore/store";
 import type {
   Active,
@@ -46,28 +43,23 @@ export default function SortableCont() {
 
   useEffect(() => {
     const ids: string[] = [];
-    const cardInp: Inpt[] = [];
-    selectedTemplate?.cardsOrder.forEach((itm) => {
+    selectedTemplate?.cards.forEach((itm) => {
       ids.push(itm.id);
     });
-    selectedTemplate?.cardsInputs.forEach((itm) => {
-      cardInp.push({ id: itm.id, value: itm.value });
-    });
     setItems(ids);
-    dispatch(setCardsInputs(cardInp));
   }, [selectedTemplate]);
 
   useEffect(() => {
     const itemsData: Card[] = [];
     for (let i = 0; i < items.length; i++) {
-      const found = selectedTemplate?.cardsOrder.find(
+      const found = selectedTemplate?.cards.find(
         (itm) => items[i] === itm.id
       );
       if (found) {
         itemsData.push(found);
       }
     }
-    dispatch(setCardsOrder(itemsData));
+    dispatch(setCards(itemsData));
   }, [items, selectedTemplate]);
 
   return (
@@ -82,12 +74,9 @@ export default function SortableCont() {
       <SortableContext items={items} strategy={verticalListSortingStrategy}>
         <Box overflow="scroll" height="calc( 100% - 4rem )">
           {items.map((id) => {
-            const item = selectedTemplate?.cardsOrder.find(
+            const item = selectedTemplate?.cards.find(
               (itm) => itm.id === id
-            );
-            const val = selectedTemplate?.cardsInputs.find(
-              (itm) => itm.id === id
-            )?.value;
+            );            
             return (
               <Box key={id} py="0.1rem">
                 {item && (
@@ -96,7 +85,6 @@ export default function SortableCont() {
                     itemId={id}
                     item={item}
                     isGrabbed={id === draggedItemId}
-                    value={val ?? ""}
                   />
                 )}
               </Box>
