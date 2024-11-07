@@ -19,12 +19,14 @@ const EditableItem = ({
   itemId,
   item,
   isGrabbed,
+  value,
 }: {
   itemId: string;
   item: Cards;
   isGrabbed: boolean;
+  value: string;
 }) => {
-  const [itemVal, setItemVal] = useState("");
+  const [itemVal, setItemVal] = useState(value);
   const dispatch = useDispatch();
   const cardsInputs = useSelector(
     (state: RootSate) => state.cardsReducer.cardsInputs

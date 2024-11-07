@@ -9,7 +9,7 @@ import {
   setSelectedCard,
   setSelectedTemplate,
 } from "../../../../../appStore/cardsSlice";
-import { Template } from "../../../../../appStore/interface/interface.model";
+import { SavedTemplate } from "../../../../../appStore/interface/interface.model";
 import { IconButton } from "@mui/material";
 import { RootSate } from "../../../../../appStore/store";
 
@@ -30,7 +30,7 @@ const style = {
 
 const DeleteCardModal = ({ itemId }: { itemId: string }) => {
   const [open, setOpen] = React.useState(false);
-  const selectedTemplate: Template | null = useSelector(
+  const selectedTemplate: SavedTemplate | null = useSelector(
     (state: RootSate) => state.cardsReducer.selectedTemplate
   );
   const dispatch = useDispatch();
@@ -46,14 +46,26 @@ const DeleteCardModal = ({ itemId }: { itemId: string }) => {
   };
 
   const deleteCard = () => {
-    const localTemplate: Template = JSON.parse(
+    const localTemplate: SavedTemplate = JSON.parse(
       JSON.stringify(selectedTemplate)
     );
-    const found = localTemplate.comps.find((card) => card.id === itemId);
-    if (found) {
-      const idx = localTemplate.comps.indexOf(found);
-      localTemplate.comps.splice(idx, 1);
+    const foundOrder = localTemplate.cardsOrder.find(
+      (card) => card.id === itemId
+    );
+    if (foundOrder) {
+      const idxOrder = localTemplate.cardsOrder.indexOf(foundOrder);
+      localTemplate.cardsOrder.splice(idxOrder, 1);
+      const foundInp = localTemplate.cardsInputs.find(
+        (card) => card.id === itemId
+      );
+      if (foundInp) {
+        const idxInp = localTemplate.cardsInputs.indexOf(foundInp);
+        localTemplate.cardsInputs.splice(idxInp, 1);
+      }
     }
+
+    console.log(localTemplate);
+
     dispatch(setSelectedTemplate(localTemplate));
     handleClose();
   };

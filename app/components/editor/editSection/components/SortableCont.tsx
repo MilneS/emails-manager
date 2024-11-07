@@ -17,12 +17,11 @@ import { restrictToFirstScrollableAncestor } from "@dnd-kit/modifiers";
 import EditableItem from "./EditableItem";
 import { Box } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
-import { setCardsInputs, setCardsOrder } from "../../../../../appStore/cardsSlice";
 import {
-  Card,
-  Inpt,
-  Template,
-} from "../../../../../appStore/interface/interface.model";
+  setCardsInputs,
+  setCardsOrder,
+} from "../../../../../appStore/cardsSlice";
+import { Card, Inpt } from "../../../../../appStore/interface/interface.model";
 import { RootSate } from "../../../../../appStore/store";
 import type {
   Active,
@@ -31,12 +30,11 @@ import type {
 import EmailTitleCard from "./EmailTitleCard";
 
 export default function SortableCont() {
-  const selectedTemplate: Template | null = useSelector(
-    (state: RootSate) => state.cardsReducer.selectedTemplate
-  );
-
   const [items, setItems] = useState<string[]>([]);
   const [draggedItemId, setDraggedItemId] = useState<string | null>(null);
+  const selectedTemplate = useSelector(
+    (state: RootSate) => state.cardsReducer.selectedTemplate
+  );
   const dispatch = useDispatch();
 
   const sensors = useSensors(
@@ -49,24 +47,28 @@ export default function SortableCont() {
   useEffect(() => {
     const ids: string[] = [];
     const cardInp: Inpt[] = [];
-    selectedTemplate?.comps.forEach((itm) => {
+    selectedTemplate?.cardsOrder.forEach((itm) => {
       ids.push(itm.id);
-      cardInp.push({ id: itm.id, value: "" });
+    });
+    selectedTemplate?.cardsInputs.forEach((itm) => {
+      cardInp.push({ id: itm.id, value: itm.value });
     });
     setItems(ids);
     dispatch(setCardsInputs(cardInp));
-  }, []);
+  }, [selectedTemplate]);
 
   useEffect(() => {
     const itemsData: Card[] = [];
     for (let i = 0; i < items.length; i++) {
-      const found = selectedTemplate?.comps.find((itm) => items[i] === itm.id);
+      const found = selectedTemplate?.cardsOrder.find(
+        (itm) => items[i] === itm.id
+      );
       if (found) {
         itemsData.push(found);
       }
     }
     dispatch(setCardsOrder(itemsData));
-  }, [items]);
+  }, [items, selectedTemplate]);
 
   return (
     <DndContext
@@ -75,11 +77,17 @@ export default function SortableCont() {
       onDragEnd={handleDragEnd}
       onDragStart={handleDragStart}
       modifiers={[restrictToFirstScrollableAncestor]}
-    > <EmailTitleCard />
+    >
+      <EmailTitleCard title={selectedTemplate?.emailTitle ?? ""} />
       <SortableContext items={items} strategy={verticalListSortingStrategy}>
         <Box overflow="scroll" height="calc( 100% - 4rem )">
           {items.map((id) => {
-            const item = selectedTemplate?.comps.find((itm) => itm.id === id);
+            const item = selectedTemplate?.cardsOrder.find(
+              (itm) => itm.id === id
+            );
+            const val = selectedTemplate?.cardsInputs.find(
+              (itm) => itm.id === id
+            )?.value;
             return (
               <Box key={id} py="0.1rem">
                 {item && (
@@ -88,6 +96,7 @@ export default function SortableCont() {
                     itemId={id}
                     item={item}
                     isGrabbed={id === draggedItemId}
+                    value={val ?? ""}
                   />
                 )}
               </Box>

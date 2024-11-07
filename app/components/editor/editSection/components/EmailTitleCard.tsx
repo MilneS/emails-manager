@@ -10,8 +10,8 @@ const style = {
   justifyContent: "space-between",
   backgroundColor: "#f7f7f7",
 };
-const EmailTitleCard = () => {
-  const [titleVal, setTitleVal] = useState("");
+const EmailTitleCard = ({ title }: { title: string }) => {
+  const [titleVal, setTitleVal] = useState(title);
   const dispatch = useDispatch();
 
   return (
@@ -28,7 +28,7 @@ const EmailTitleCard = () => {
           dispatch(setEmailTitle(e.target.value));
         }}
         onChange={(e) => setTitleVal(e.target.value)}
-        value={titleVal}
+        value={titleVal ?? ""}
       />
     </Box>
   );

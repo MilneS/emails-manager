@@ -8,7 +8,7 @@ import {
 } from "./interface/interface.model";
 
 const initialState: {
-  selectedTemplate: Template | null;
+  selectedTemplate: SavedTemplate | null;
   cardsOrder: Card[];
   cardsInputs: Inpt[];
   selectedCard: string | null;
