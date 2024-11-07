@@ -11,6 +11,7 @@ import { useSelector } from "react-redux";
 import { RootSate } from "@/appStore/store";
 import { SavedTemplate } from "@/appStore/interface/interface.model";
 import { useEffect, useState } from "react";
+import Link from "next/link";
 
 interface Column {
   id: "title" | "description";
@@ -28,9 +29,9 @@ const columns: readonly Column[] = [
 ];
 
 export default function TemplateTable() {
-  const [rows, setRows] = useState<{ title: string; description: string }[]>(
-    []
-  );
+  const [rows, setRows] = useState<
+    { id: String; title: string; description: string }[]
+  >([]);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
 
@@ -38,10 +39,11 @@ export default function TemplateTable() {
     (state: RootSate) => state.cardsReducer.allTemplates
   );
   const rowsHandler = () => {
-    const list: { title: string; description: string }[] = [];
+    const list: { id: string; title: string; description: string }[] = [];
     allTemplates.forEach((template) => {
-      if (template.emailTitle) {
+      if (template.emailTitle && template._id) {
         const line = {
+          id: template._id,
           title: template.emailTitle,
           description: "N/A",
         };
@@ -93,7 +95,21 @@ export default function TemplateTable() {
                       const value = row[column.id];
                       return (
                         <TableCell key={column.id}>
-                          <Typography variant="body2">{value}</Typography>
+                          {column.id === "title" ? (
+                            <Link
+                              href={`/email-editor/${row.id}`}
+                              style={{ textDecoration: "none" }}
+                            >
+                              <Typography
+                                variant="body2"
+                                sx={{ width: "fit-content" }}
+                              >
+                                {value}
+                              </Typography>
+                            </Link>
+                          ) : (
+                            <Typography variant="body2">{value}</Typography>
+                          )}
                         </TableCell>
                       );
                     })}

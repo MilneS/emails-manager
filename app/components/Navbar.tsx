@@ -24,6 +24,8 @@ import { User } from "@/appStore/interface/interface.model";
 import { getUser } from "@/services/user";
 import { setIsLoggedIn, setUserData } from "@/appStore/authSlice";
 import { usePathname } from "next/navigation";
+import { getAllTemplates } from "@/services/template";
+import { setAllTemplates } from "@/appStore/cardsSlice";
 
 interface Props {
   /**
@@ -75,9 +77,25 @@ export default function DrawerAppBar(props: Props) {
 
   useEffect(() => {
     if (!isLoggedIn) {
-      router.push("/login");
+      // router.push("/login");
     }
   }, [isLoggedIn, pathName]);
+
+
+  const userData: User | null = useSelector(
+    (state: RootSate) => state.authReducer.userData
+  );
+
+  const templates = async () => {
+    if (userData) {
+      const templates = await getAllTemplates(userData.email);
+      dispatch(setAllTemplates(templates));
+    }
+  };
+
+  useEffect(() => {
+    templates();
+  }, [userData]);
 
   const drawer = (
     <Box onClick={handleDrawerToggle} sx={{ textAlign: "center" }}>
