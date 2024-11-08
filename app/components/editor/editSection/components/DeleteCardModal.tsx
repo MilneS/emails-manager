@@ -56,9 +56,6 @@ const DeleteCardModal = ({ itemId }: { itemId: string }) => {
       const idxOrder = localTemplate.cards.indexOf(foundOrder);
       localTemplate.cards.splice(idxOrder, 1);
     }
-
-    console.log(localTemplate);
-
     dispatch(setSelectedTemplate(localTemplate));
     handleClose();
   };

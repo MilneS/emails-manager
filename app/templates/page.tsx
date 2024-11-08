@@ -3,7 +3,7 @@ import * as React from "react";
 import { styled } from "@mui/material/styles";
 import { Grid2 as Grid, Paper, Box } from "@mui/material";
 import { templates } from "@/utils";
-import { Template } from "@/appStore/interface/interface.model";
+import { SavedTemplate } from "@/appStore/interface/interface.model";
 import Link from "next/link";
 import Image from "next/image";
 
@@ -36,17 +36,21 @@ export default function Templates() {
     >
       <Box sx={{ width: "40%" }}>
         <Grid container rowSpacing={2} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
-          {templates.map((template: Template) => {
+          {templates.map((template: SavedTemplate) => {
             return (
-              <Grid size={6} key={template.id}>
-                <Link href={`/email-editor/${template.id}`}>
+              <Grid size={6} key={template.newTemplateId}>
+                <Link
+                  href={`/email-editor/newtemplate-${template.newTemplateId}`}
+                >
                   <Item>
-                    <Image
-                      src={template.templateImage}
-                      width={200}
-                      height={240}
-                      alt={`${template.id} image`}
-                    />
+                    {template.templateImage && (
+                      <Image
+                        src={template.templateImage}
+                        width={200}
+                        height={240}
+                        alt={`${template.newTemplateId} image`}
+                      />
+                    )}
                   </Item>
                 </Link>
               </Grid>

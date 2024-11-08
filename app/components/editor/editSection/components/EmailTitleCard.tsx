@@ -1,7 +1,8 @@
 import { Box, TextField, Typography } from "@mui/material";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { setEmailTitle } from "../../../../../appStore/cardsSlice";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { RootSate } from "@/appStore/store";
 
 const style = {
   p: 1,
@@ -10,9 +11,18 @@ const style = {
   justifyContent: "space-between",
   backgroundColor: "#f7f7f7",
 };
-const EmailTitleCard = ({ title }: { title: string }) => {
-  const [titleVal, setTitleVal] = useState(title);
+const EmailTitleCard = () => {
+  const selectedTemplate = useSelector(
+    (state: RootSate) => state.cardsReducer.selectedTemplate
+  );
+  const [titleVal, setTitleVal] = useState("");
   const dispatch = useDispatch();
+
+  useEffect(() => {
+    if (selectedTemplate?.emailTitle) {
+      setTitleVal(selectedTemplate.emailTitle);
+    }
+  }, [selectedTemplate]);
 
   return (
     <Box sx={style}>
@@ -28,7 +38,7 @@ const EmailTitleCard = ({ title }: { title: string }) => {
           dispatch(setEmailTitle(e.target.value));
         }}
         onChange={(e) => setTitleVal(e.target.value)}
-        value={titleVal ?? ""}
+        value={titleVal}
       />
     </Box>
   );

@@ -52,9 +52,7 @@ export default function SortableCont() {
   useEffect(() => {
     const itemsData: Card[] = [];
     for (let i = 0; i < items.length; i++) {
-      const found = selectedTemplate?.cards.find(
-        (itm) => items[i] === itm.id
-      );
+      const found = selectedTemplate?.cards.find((itm) => items[i] === itm.id);
       if (found) {
         itemsData.push(found);
       }
@@ -70,13 +68,11 @@ export default function SortableCont() {
       onDragStart={handleDragStart}
       modifiers={[restrictToFirstScrollableAncestor]}
     >
-      <EmailTitleCard title={selectedTemplate?.emailTitle ?? ""} />
+      <EmailTitleCard />
       <SortableContext items={items} strategy={verticalListSortingStrategy}>
         <Box overflow="scroll" height="calc( 100% - 4rem )">
           {items.map((id) => {
-            const item = selectedTemplate?.cards.find(
-              (itm) => itm.id === id
-            );            
+            const item = selectedTemplate?.cards.find((itm) => itm.id === id);
             return (
               <Box key={id} py="0.1rem">
                 {item && (

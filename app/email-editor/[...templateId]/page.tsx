@@ -8,6 +8,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { SavedTemplate } from "../../../appStore/interface/interface.model";
 import { RootSate } from "../../../appStore/store";
 import { useParams } from "next/navigation";
+import { templates } from "@/utils";
 
 function EmailEditor() {
   const pathName = useParams();
@@ -17,9 +18,17 @@ function EmailEditor() {
   );
 
   useEffect(() => {
-    const found = allTemplates.find(
-      (template) => template._id === pathName?.templateId[0]
-    );
+    let found;
+    const splitPath = pathName?.templateId[0].split("-");
+    if (splitPath && splitPath[0] === "newtemplate") {
+      found = templates.find(
+        (template) => template.newTemplateId === splitPath[1]
+      );
+    } else {
+      found = allTemplates.find(
+        (template) => template._id === pathName?.templateId[0]
+      );
+    }
     dispatch(setSelectedTemplate(found));
   }, [allTemplates]);
 
