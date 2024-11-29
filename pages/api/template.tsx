@@ -14,22 +14,28 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
         res.json(template);
         break;
       case "POST":
-        const templateData= JSON.parse(req.body)
+        const templateData = JSON.parse(req.body);
         const createTemplate = await db
           .collection("templates")
           .insertOne(templateData);
         res.json(createTemplate);
         break;
-        case "PUT":
-          const templateInfo = JSON.parse(req.body);
-          const updateTemplate = await db
-            .collection("templates")
-            .updateMany(
-              { _id: new ObjectId(`${templateInfo._id}`) },
-              { $set: { cards:templateInfo.cards } }
-            );
-          res.json(updateTemplate);
-          break;
+      case "PUT":
+        const templateInfo = JSON.parse(req.body);
+        const updateTemplate = await db
+          .collection("templates")
+          .updateMany(
+            { _id: new ObjectId(`${templateInfo._id}`) },
+            {
+              $set: {
+                cards: templateInfo.cards,
+                emailTitle: templateInfo.emailTitle,
+                isReorderable: templateInfo.isReorderable,
+              },
+            }
+          );
+        res.json(updateTemplate);
+        break;
     }
   } catch (e) {
     console.error(e);
