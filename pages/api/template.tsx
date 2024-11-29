@@ -1,3 +1,4 @@
+import { ObjectId } from "mongodb";
 import clientPromise from "../../lib/mongodb";
 import { NextApiRequest, NextApiResponse } from "next";
 
@@ -19,6 +20,16 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
           .insertOne(templateData);
         res.json(createTemplate);
         break;
+        case "PUT":
+          const templateInfo = JSON.parse(req.body);
+          const updateTemplate = await db
+            .collection("templates")
+            .updateMany(
+              { _id: new ObjectId(`${templateInfo._id}`) },
+              { $set: { cards:templateInfo.cards } }
+            );
+          res.json(updateTemplate);
+          break;
     }
   } catch (e) {
     console.error(e);

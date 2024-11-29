@@ -8,8 +8,10 @@ import { IconButton } from "@mui/material";
 import { Save } from "@mui/icons-material";
 import { useDispatch, useSelector } from "react-redux";
 import { RootSate } from "@/appStore/store";
-import { createTemplate } from "@/services/template";
+import { createTemplate, updateTemplate } from "@/services/template";
 import { setSaveTemplateMessage } from "@/appStore/cardsSlice";
+import { useParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 
 const style = {
   position: "absolute",
@@ -28,16 +30,15 @@ const style = {
 
 const SaveModal = () => {
   const [open, setOpen] = useState(false);
-
-  const dispatch = useDispatch();
-
   const emailTitle = useSelector(
     (state: RootSate) => state.cardsReducer.emailTitle
   );
   const userData = useSelector((state: RootSate) => state.authReducer.userData);
-  const cards = useSelector(
-    (state: RootSate) => state.cardsReducer.cards
-  );
+  const cards = useSelector((state: RootSate) => state.cardsReducer.cards);
+  const pathName = useParams();
+  const dispatch = useDispatch();
+  const router = useRouter();
+  const splitPath = pathName?.templateId[0].split("-");
 
   const handleOpen = () => {
     setOpen(true);
@@ -47,7 +48,7 @@ const SaveModal = () => {
     setOpen(false);
   };
 
-  const save = async () => {
+  const create = async () => {
     if (userData?.email) {
       // id in path ? update :
       const saveTemplate = await createTemplate(
@@ -58,6 +59,28 @@ const SaveModal = () => {
       );
       if (saveTemplate.insertedId) {
         //insert id to path
+        router.push(`/email-editor/${saveTemplate.insertedId}`);
+      } else {
+        dispatch(
+          setSaveTemplateMessage("Something went wrong, try again later.")
+        );
+      }
+    }
+    handleClose();
+  };
+
+  const update = async () => {
+    if (userData?.email && splitPath) {
+      const _id = splitPath[0];
+      const updatedTemplate = await updateTemplate(
+        _id,
+        emailTitle,
+        cards,
+        userData?.email,
+        false
+      );
+      if (updatedTemplate.modifiedCount === 1) {
+        //insert id to path
         dispatch(setSaveTemplateMessage("Saved!"));
       } else {
         dispatch(
@@ -66,6 +89,10 @@ const SaveModal = () => {
       }
     }
     handleClose();
+  };
+
+  const save = () => {
+    splitPath && splitPath[0] === "newtemplate" ? create() : update();
   };
 
   return (

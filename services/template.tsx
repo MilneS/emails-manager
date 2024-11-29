@@ -47,3 +47,23 @@ export const createTemplate = async (
   });
   return fetchedTemplate.json();
 };
+export const updateTemplate = async (
+  _id: string,
+  emailTitle: string | null,
+  cards: Card[],
+  authorId: string,
+  isReorderable: boolean
+) => {
+  const templateData: SavedTemplate = {
+    _id,
+    emailTitle,
+    cards,
+    authorId,
+    isReorderable,
+  };
+  const fetchedTemplate = await fetch("http://localhost:3000/api/template/", {
+    method: "PUT",
+    body: JSON.stringify(templateData),
+  });
+  return fetchedTemplate.json();
+};
