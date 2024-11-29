@@ -4,6 +4,7 @@ import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { useDispatch, useSelector } from "react-redux";
 import {
+  setInputValues,
   setSelectedCard,
   setSelectedTemplate,
 } from "../../../../../appStore/cardsSlice";
@@ -29,6 +30,9 @@ const EditableItem = ({
   const selectedTemplate = useSelector(
     (state: RootSate) => state.cardsReducer.selectedTemplate
   );
+  const inputValues = useSelector(
+    (state: RootSate) => state.cardsReducer.inputValues
+  );
 
   const { attributes, listeners, setNodeRef, transform, transition } =
     useSortable({ id: itemId });
@@ -51,13 +55,14 @@ const EditableItem = ({
     e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement, Element>
   ) => {
     dispatch(setSelectedCard(null));
-    const templateCopy = JSON.parse(JSON.stringify(selectedTemplate));
-    templateCopy.cards.forEach((card: Inpt) => {
-      if (e.target.id === card.id) {
-        card.value = e.target.value;
-      }
-    });
-    dispatch(setSelectedTemplate(templateCopy));
+    const inputValuesCopy = JSON.parse(JSON.stringify(inputValues));
+    const found = inputValuesCopy.find(
+      (inpt: Inpt) => inpt.id === e.target.id
+    );
+    if (found) {
+      found.value = e.target.value;
+    }
+    dispatch(setInputValues(inputValuesCopy));
   };
 
   return (

@@ -12,6 +12,7 @@ import { createTemplate, updateTemplate } from "@/services/template";
 import { setSaveTemplateMessage } from "@/appStore/cardsSlice";
 import { useParams } from "next/navigation";
 import { useRouter } from "next/navigation";
+import { Card, Inpt } from "@/appStore/interface/interface.model";
 
 const style = {
   position: "absolute",
@@ -34,7 +35,12 @@ const SaveModal = () => {
     (state: RootSate) => state.cardsReducer.emailTitle
   );
   const userData = useSelector((state: RootSate) => state.authReducer.userData);
-  const cards = useSelector((state: RootSate) => state.cardsReducer.cards);
+  const savedCards = useSelector(
+    (state: RootSate) => state.cardsReducer.cards
+  );
+  const inputValues = useSelector(
+    (state: RootSate) => state.cardsReducer.inputValues
+  );
   const pathName = useParams();
   const dispatch = useDispatch();
   const router = useRouter();
@@ -48,9 +54,18 @@ const SaveModal = () => {
     setOpen(false);
   };
 
+  const cardValues = () => {
+    const localCards = JSON.parse(JSON.stringify(savedCards));
+    localCards.forEach((card: Card) => {
+      inputValues.forEach((inpt: Inpt) =>
+        inpt.id === card.id ? (card.value = inpt.value) : null
+      );
+    });
+    return localCards;
+  };
   const create = async () => {
     if (userData?.email) {
-      // id in path ? update :
+      const cards = cardValues();
       const saveTemplate = await createTemplate(
         emailTitle,
         cards,
@@ -72,6 +87,8 @@ const SaveModal = () => {
   const update = async () => {
     if (userData?.email && splitPath) {
       const _id = splitPath[0];
+      const cards = cardValues();
+
       const updatedTemplate = await updateTemplate(
         _id,
         emailTitle,

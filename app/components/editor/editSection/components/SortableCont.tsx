@@ -17,7 +17,7 @@ import { restrictToFirstScrollableAncestor } from "@dnd-kit/modifiers";
 import EditableItem from "./EditableItem";
 import { Box } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
-import { setCards } from "../../../../../appStore/cardsSlice";
+import { setCards, setInputValues } from "../../../../../appStore/cardsSlice";
 import { Card } from "../../../../../appStore/interface/interface.model";
 import { RootSate } from "../../../../../appStore/store";
 import type {
@@ -43,10 +43,13 @@ export default function SortableCont() {
 
   useEffect(() => {
     const ids: string[] = [];
+    const inputValues: { id: string; value: string }[] = [];
     selectedTemplate?.cards.forEach((itm) => {
       ids.push(itm.id);
+      inputValues.push({ id: itm.id, value: itm.value });
     });
     setItems(ids);
+    dispatch(setInputValues(inputValues));
   }, [selectedTemplate]);
 
   useEffect(() => {
